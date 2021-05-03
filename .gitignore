@@ -1,0 +1,8 @@
+node_modules/*
+node_modules/
+dist/
+*.deb
+*.AppImage
+*.rpm
+package-lock.json
+electron-build/

@@ -1,0 +1,207 @@
+import { BrowserWindow, Menu, shell } from "electron";
+import path from 'path';
+import fs from 'fs';
+import { EventEmitter } from 'events';
+import { SettingWindow } from "../../windows/SettingsWindow/SettingsWindow";
+import { getSettings } from "../Settings/Settings";
+import { SettingConfigInterface, ValueSettings } from "../Settings/SettingInterface";
+import { exec } from "child_process";
+
+//const
+const SettingController = getSettings();
+const Settings = SettingController.getAllConfigs();
+
+export class MainBrowser extends EventEmitter {
+    private win: Electron.BrowserWindow | undefined;
+    private app: Electron.App;
+    constructor(app) {
+        super();
+        this.app = app;
+        this.init();
+    }
+    init(): void {
+        let icon:string | undefined;
+        if(fs.existsSync(path.resolve(__dirname, "..", "..", "icon", "logo.png"))){
+            icon = path.resolve(__dirname, "..", "..", "icon", "logo.png");
+        }
+        this.win = new BrowserWindow({
+            show: true,
+            icon,
+            webPreferences: {
+                experimentalFeatures: true,
+                nodeIntegration: true,
+                spellcheck: false,
+                /* partition:"persist:main" */
+            }
+        });
+
+        if(!this.win){
+            throw new Error("Browser window is not create");
+        }
+
+        if (Settings.skipTaskbar.value) {
+            this.win.setSkipTaskbar(true);
+        }
+
+        if (process.env.DEBUG) {
+            this.win.webContents.openDevTools();
+        }
+        this.EventsInit();
+        this.LoadUrl();
+        this.CreateMenu();
+
+    }
+    getBrowser(): Electron.BrowserWindow{
+        return this.win;
+    }
+    LoadUrl(): void {
+        this.win.loadURL("https://web.whatsapp.com/", {
+            userAgent: this.win.webContents.getUserAgent().replace(/(Electron|whatsdesk)\/([0-9\.]+)\ /gi, "").replace(/\-(beta|alfa)/gi,"")
+        });
+    }
+    reload(): void {
+        this.LoadUrl();
+    }
+    Notification(): void {
+        this.win.flashFrame(true);
+        this.emit('notification:new');
+    }
+    NotificationClear(): void {
+        this.win.flashFrame(false);
+        this.emit('notification:clear');
+    }
+    getFocus(): void {
+        if (!this.win.isVisible()) this.win.show();
+        if (this.win.isMinimized()) this.win.restore()
+        this.win.focus()
+    }
+    CreateMenu(): void {
+        const menu = Menu.buildFromTemplate([
+            {
+                label: '&Tools',
+                submenu: [
+                    {
+                        label: 'Settings',
+                        accelerator: "CommandOrControl+s",
+                        click() {
+                            SettingWindow();
+                        }
+                    },
+                    {
+                        label: 'Reload',
+                        accelerator: "CommandOrControl+r",
+                        click: () => {
+                            this.reload();
+                        }
+                    }
+                ]
+            },
+            {
+                label: '&View',
+                submenu: [
+                    {
+                        label: 'show/hide Menu',
+                        accelerator: "CommandOrControl+h",
+                        click: _ => {
+                            this.win.setMenuBarVisibility(!this.win.isMenuBarVisible())
+                            this.win.setAutoHideMenuBar(!this.win.isMenuBarVisible())
+                        }
+                    }
+                ]
+            }
+        ])
+        this.win.setMenu(menu);
+    }
+    toogleVisibility(): void {
+        this.win.isVisible() ? this.win.hide() : this.win.show()
+    }
+    destroy(): void {
+        this.win.destroy();
+    }
+    isVisible(): void {
+        this.win.isVisible();
+    }
+    hide(): void {
+        this.win.hide();
+    }
+    show(): void {
+        this.win.show();
+    }
+    EventsInit(): void {
+        //window events
+        this.win.on('page-title-updated', (evt: any, title: string) => {
+            evt.preventDefault()
+            title = title.replace(/(\([0-9]+\) )?.*/, "$1WhatsDesk");
+            this.win.setTitle(title);
+            this.emit('title-updated', title);
+            if (!/\([0-9]+\)/.test(title)) {
+                this.emit('clear-title');
+                this.NotificationClear();
+            }
+        })
+        this.win.on('close', (event: any) => {
+            if (Settings.closeExit.value) {
+                this.app.quit();
+                process.exit(0);
+            } else {
+                event.preventDefault();
+                this.win.hide();
+            }
+        });
+
+        //content events
+        this.win.webContents.on('did-finish-load', async () => {
+            await this.ScriptLoad();
+            this.SendConfigs();
+        })
+
+        this.win.webContents.on('will-navigate', this.HandleRedirect)
+        this.win.webContents.on('new-window', this.HandleRedirect)
+
+        //internal events
+        SettingController.on('updateSettings', (name: string, value: ValueSettings) => {
+            switch (name) {
+                case "theme":
+                    this.win.webContents.send('eventsSended', {
+                        type: "changeTheme",
+                        theme: value.value
+                    });
+                    break;
+                case "skipTaskbar":
+                    if (value.value) {
+                        this.win.setSkipTaskbar(true);
+                    }else{
+                        this.win.setSkipTaskbar(false);
+                    }
+                    break;
+            }
+        })
+    }
+    SendConfigs(): void {
+        this.win.webContents.send('settings', SettingController.getAllConfigs());
+    }
+    HandleRedirect(e: any, url: string): void {
+        if (!Settings.openInternal.value) {
+            if (!url.startsWith("https://web.whatsapp.com/")) {
+                e.preventDefault()
+                if (Settings.BrowserOpen.value == "default") {
+                    shell.openExternal(url)
+                } else {
+                    exec(`${Settings.BrowserOpen.value} ${url}`);
+                }
+            }
+        }
+    }
+    async ScriptLoad(): Promise<void> {
+        let injectScripts: Array<string> = fs.readdirSync(path.resolve(__dirname, "..", "..", "scripts"));
+        for (let scriptName of injectScripts) {
+            let script = fs.readFileSync(path.resolve(__dirname, "..", "..", "scripts", scriptName), "utf8");
+            try {
+                await this.win.webContents.executeJavaScript(script);
+            } catch (ex) {
+                console.error("Error in load script [%s]: %s", scriptName, ex);
+            }
+        }
+    }
+}
+
