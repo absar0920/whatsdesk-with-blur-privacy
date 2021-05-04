@@ -1,7 +1,7 @@
 {
 	"name": "whatsdesk",
-	"version": "0.3.3",
-	"betaVersion": "0.3.3",
+	"version": "0.3.4",
+	"betaVersion": "0.3.4",
 	"description": "unofficial whatsapp client for linux ",
 	"main": "electron-build/src/index.js",
 	"homepage": "https://gitlab.com/zerkc/whatsdesk",
@@ -48,7 +48,9 @@
 		"asar": true,
 		"files": [
 			"**/*",
-			"electron-build/**/*"
+			"electron-build/**/*",
+			"!dist/**/*",
+			"!page/**/*"
 		],
 		"snap": {
 			"confinement": "strict",
