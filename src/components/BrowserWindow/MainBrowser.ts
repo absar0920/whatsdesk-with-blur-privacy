@@ -54,13 +54,14 @@ export class MainBrowser extends EventEmitter {
     getBrowser(): Electron.BrowserWindow{
         return this.win;
     }
-    LoadUrl(): void {
+    LoadUrl(): boolean {
         this.win.loadURL("https://web.whatsapp.com/", {
             userAgent: this.win.webContents.getUserAgent().replace(/(Electron|whatsdesk)\/([0-9\.]+)\ /gi, "").replace(/\-(beta|alfa)/gi,"")
         });
+		return true;
     }
-    reload(): void {
-        this.LoadUrl();
+    reload(): boolean {
+        return this.LoadUrl();
     }
     Notification(): void {
         this.win.flashFrame(true);
@@ -106,7 +107,22 @@ export class MainBrowser extends EventEmitter {
                             this.win.setMenuBarVisibility(!this.win.isMenuBarVisible())
                             this.win.setAutoHideMenuBar(!this.win.isMenuBarVisible())
                         }
-                    }
+                    },
+					{
+                        label: 'Zoom +',
+                        accelerator: "CommandOrControl+numadd",
+                        click: _ => {
+                            this.win.webContents.zoomLevel *= 2;
+                        }
+                    },
+					{
+                        label: 'Zoom -',
+                        accelerator: "CommandOrControl+numsub",
+                        click: _ => {
+                            this.win.webContents.zoomLevel *= 0.5;
+                        }
+                    },
+					
                 ]
             }
         ])
@@ -196,11 +212,7 @@ export class MainBrowser extends EventEmitter {
         let injectScripts: Array<string> = fs.readdirSync(path.resolve(__dirname, "..", "..", "scripts"));
         for (let scriptName of injectScripts) {
             let script = fs.readFileSync(path.resolve(__dirname, "..", "..", "scripts", scriptName), "utf8");
-            try {
-                await this.win.webContents.executeJavaScript(script);
-            } catch (ex) {
-                console.error("Error in load script [%s]: %s", scriptName, ex);
-            }
+            await this.win.webContents.executeJavaScript(script+";0");
         }
     }
 }

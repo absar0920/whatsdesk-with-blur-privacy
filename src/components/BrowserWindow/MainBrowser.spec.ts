@@ -15,4 +15,14 @@ describe('MainBrowser', function () {
         let w = new MainBrowser(app);
         expect(w.getBrowser()).toBeInstanceOf(BrowserWindow);
     })
+	it('reload Work',function(){
+        let w = new MainBrowser(app);
+        expect(w.reload()).toBeTruthy();
+    })
+	it('Script load', function(){
+		let w = new MainBrowser(app);
+		expect(_ => {
+            w.ScriptLoad();
+        }).not.toThrow();
+	})
 });
