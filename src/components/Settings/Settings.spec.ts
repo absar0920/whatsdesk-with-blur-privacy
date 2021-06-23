@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { getSettings,Settings } from './Settings';
 
-
+app.commandLine.appendArgument('no-sandbox');
 describe('Settings', function () {
     let settings = getSettings();
     it('create', function () {
