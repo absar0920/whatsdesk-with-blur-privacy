@@ -14,7 +14,9 @@ export function SettingWindow() {
         width: 550,
         resizable: false,
         webPreferences:{
-            nodeIntegration:true
+            nodeIntegration:true,
+            contextIsolation: false,
+            enableRemoteModule: true,
         }
     })
     window.setMenu(null);

@@ -29,7 +29,9 @@ export class MainBrowser extends EventEmitter {
             icon,
             webPreferences: {
                 experimentalFeatures: true,
-                nodeIntegration: true,
+                nodeIntegration:true,
+                contextIsolation: false,
+                enableRemoteModule: true,
                 spellcheck: false,
                 /* partition:"persist:main" */
             }

@@ -1,7 +1,7 @@
 {
 	"name": "whatsdesk",
-	"version": "0.3.5",
-	"betaVersion": "0.3.5",
+	"version": "0.3.6",
+	"betaVersion": "0.3.6",
 	"description": "unofficial whatsapp client for linux ",
 	"main": "electron-build/src/index.js",
 	"homepage": "https://gitlab.com/zerkc/whatsdesk",
@@ -36,8 +36,8 @@
 	"devDependencies": {
 		"@jest-runner/electron": "^3.0.0",
 		"@types/jest": "^26.0.4",
-		"electron": "^9.1.0",
-		"electron-builder": "^20.44.4",
+		"electron": "^13.1.4",
+		"electron-builder": "^22.11.7",
 		"electron-compilers": "^5.9.0",
 		"electron-reload": "^1.5.0",
 		"jest": "^26.1.0",
