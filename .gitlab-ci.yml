@@ -11,7 +11,7 @@
 #    - npm install
 #    - npm run test
 
-pages:
+build:
   stage: build
   image: node
   script:
@@ -19,11 +19,22 @@ pages:
   - apt-get install -y rpm
   - npm install
   - npm run build
+  artifacts:
+    untracked: true
+  only:
+  - master
+
+pages:
+  stage: deploy
+  image: node
+  needs: [build]
+  dependencies: 
+    - build
+  script:
   - mkdir .public
   - cp -r page/* .public
   - mv .public public
   artifacts:
-    untracked: true
     paths:
     - public
   only:
@@ -32,9 +43,9 @@ pages:
 publish_snap:
   image: ubuntu:18.04
   stage: deploy
-  needs: [pages]
+  needs: [build]
   dependencies: 
-    - pages
+    - build
   script:
     - apt-get update -qy
     - apt-get install -y snapcraft 
