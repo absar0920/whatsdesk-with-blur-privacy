@@ -16,7 +16,7 @@ pages:
   image: node
   script:
   - apt-get update
-  - apt-get install -y rpm snapcraft
+  - apt-get install -y rpm
   - npm install
   - npm run build
   - mkdir .public
