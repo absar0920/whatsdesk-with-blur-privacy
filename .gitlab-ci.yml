@@ -16,9 +16,12 @@ pages:
   image: node
   script:
   - apt-get update
-  - apt-get install -y rpm
+  - apt-get install -y rpm snapcraft
   - npm install
   - npm run build
+  - echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > snapcraft.login
+  - snapcraft login --with snapcraft.login
+  - snapcraft push dist/*.snap --release edge
   - mkdir .public
   - cp -r page/* .public
   - mv .public public
@@ -28,15 +31,15 @@ pages:
   only:
   - master
 
-publish_snap:
-  image: ubuntu:18.04
-  stage: deploy
-  needs: [pages]
-  script:
-    - apt-get update -qy
-    - apt-get install -y snapcraft 
-    - echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > snapcraft.login
-    - snapcraft login --with snapcraft.login
-    - snapcraft push dist/*.snap --release edge
-  only:
-    - master
+#publish_snap:
+#  image: ubuntu:18.04
+#  stage: deploy
+#  needs: [pages]
+#  script:
+#    - apt-get update -qy
+#    - apt-get install -y snapcraft 
+#    - echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > snapcraft.login
+#    - snapcraft login --with snapcraft.login
+#    - snapcraft push dist/*.snap --release edge
+#  only:
+#    - master
