@@ -16,7 +16,7 @@ export function SettingWindow() {
         webPreferences:{
             nodeIntegration:true,
             contextIsolation: false,
-            enableRemoteModule: true,
+            sandbox:false,
         }
     })
     window.setMenu(null);

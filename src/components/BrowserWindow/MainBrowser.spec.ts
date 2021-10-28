@@ -1,7 +1,9 @@
 import { MainBrowser } from "./MainBrowser";
 import { app, BrowserWindow } from 'electron';
 
-app.commandLine.appendArgument('no-sandbox');
+/* app.commandLine.appendArgument('no-sandbox'); */
+app.commandLine.appendSwitch('no-sandbox')
+
 describe('MainBrowser', function () {
     
     it('create', function () {

@@ -1,4 +1,4 @@
-const { ipcRenderer:ipcRendererEvents } = require('electron');
+/* const { ipcRenderer:ipcRendererEvents } = require('electron');
 
 ipcRendererEvents.on('eventsSended',(evt,data)=>{
     switch(data.type){
@@ -19,4 +19,14 @@ ipcRendererEvents.on('settings',(evt,data)=>{
     } else {
         $("body").removeClass("dark");
     }
-})
+}) */
+;((w)=>{
+    w.eventMain = {
+        send:(name, data) => {
+            fetch(`events://${name}/${JSON.stringify({d:data})}`)
+        },
+        on:(name,cb) => {
+
+        }
+    }
+})(window);

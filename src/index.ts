@@ -1,12 +1,11 @@
 //imports
-import { app, ipcMain, } from 'electron';
+import { app, ipcMain,protocol } from 'electron';
 import { MainBrowser } from './components/BrowserWindow/MainBrowser';
 import { TrayIcon } from './components/TrayIcon/TrayIcon';
 import { checkUpdates } from './utils/updates';
 import { Notify } from './utils/notifications';
 import { getSettings } from './components/Settings/Settings';
 import { getEnvironment } from './utils/environment';
-
 const envConfig = getEnvironment();
 
 //Vars 
@@ -16,8 +15,11 @@ let SettingsController = getSettings();
 
 //Process name
 process.title = envConfig.name;
-
+protocol.registerSchemesAsPrivileged([
+    { scheme: 'events', privileges: { bypassCSP: true, supportFetchAPI:true } }
+  ])
 app.on("ready", _ => {
+    
     
     win = new MainBrowser(app);
     appIcon = TrayIcon(win, app);

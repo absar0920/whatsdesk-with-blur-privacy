@@ -1,4 +1,4 @@
-function subItem(name, fn) {
+/* function subItem(name, fn) {
     return $("<li>")
         .attr({
             "data-animate-dropdown-item": true,
@@ -115,4 +115,4 @@ $.fn.contextMenu = function (options) {
     })
 
 
-}
+} */

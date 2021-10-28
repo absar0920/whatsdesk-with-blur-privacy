@@ -12,7 +12,7 @@
 #    - npm run test
 
 pages:
-  stage: deploy
+  stage: build
   image: node
   script:
   - apt-get update
@@ -27,3 +27,17 @@ pages:
     - public
   only:
   - master
+
+publish_snap:
+  image: ubuntu:18.04
+  stage: deploy
+  needs: [pages]
+  script:
+    - apt-get update -qy
+    - apt-get install -y snapcraft 
+    - snapcraft
+    - echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > snapcraft.login
+    - snapcraft login --with snapcraft.login
+    - snapcraft push dist/*.snap --release edge
+  only:
+    - master

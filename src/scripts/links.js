@@ -1,4 +1,4 @@
-const $ = require('jquery');
+/* const $ = require('jquery');
 const { shell } = require('electron');
 function load() {
     $(".focusable-list-item:NOT(.ignoreClickWD)").each(function (i, e) {
@@ -60,10 +60,10 @@ function checkLoad() {
     $("body").on("DOMSubtreeModified", ()=>{
         if ($(`.copyable-text.selectable-text[dir]`).length > 0) {
             
-            /* $(document).off("DOMSubtreeModified"); */
+            // $(document).off("DOMSubtreeModified");
             load();
             //_onafterload();
         }
     });
 }
-checkLoad();
+checkLoad(); */

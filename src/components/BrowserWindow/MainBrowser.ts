@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, shell } from "electron";
+import { BrowserWindow, Menu, shell,protocol } from "electron";
 import path from 'path';
 import fs from 'fs';
 import { EventEmitter } from 'events';
@@ -28,11 +28,9 @@ export class MainBrowser extends EventEmitter {
             show: true,
             icon,
             webPreferences: {
-                experimentalFeatures: true,
-                nodeIntegration:true,
-                contextIsolation: false,
-                enableRemoteModule: true,
+                plugins: true,
                 spellcheck: false,
+                sandbox:false
                 /* partition:"persist:main" */
             }
         });
@@ -57,10 +55,38 @@ export class MainBrowser extends EventEmitter {
         return this.win;
     }
     LoadUrl(): boolean {
+        this.win.webContents.setUserAgent(this.win.webContents.getUserAgent().replace(/(Electron|whatsdesk)\/([0-9\.]+)\ /gi, "").replace(/\-(beta|alfa)/gi,""));
         this.win.loadURL("https://web.whatsapp.com/", {
             userAgent: this.win.webContents.getUserAgent().replace(/(Electron|whatsdesk)\/([0-9\.]+)\ /gi, "").replace(/\-(beta|alfa)/gi,"")
         });
+        const content = Buffer.from("you've been conned!");
+        this.win.webContents.session.webRequest.onHeadersReceived({urls:['https://web.whatsapp.com/*']},(details,cb)=>{
+            delete details.responseHeaders['content-security-policy-report-only'];
+            delete details.responseHeaders['content-security-policy'];
+            
+            /* console.log(details.responseHeaders); */
+            
+            cb({
+                cancel:false,
+                responseHeaders:details.responseHeaders
+            })
+        })
+        protocol.registerBufferProtocol("events", async (request, result) => {
+            this.processEvent(request,result);
+        });
+        
 		return true;
+    }
+    processEvent(req,res){
+        let url = req.url;
+        url = url.replace("events://","");
+        let params = url.split("/");
+        console.log(params);
+        if(params[0] == "notifications"){
+            this.Notification();
+        }
+        const content = Buffer.from("");
+        return res(content);
     }
     reload(): boolean {
         return this.LoadUrl();
@@ -180,10 +206,10 @@ export class MainBrowser extends EventEmitter {
         SettingController.on('updateSettings', (name: string, value: ValueSettings) => {
             switch (name) {
                 case "theme":
-                    this.win.webContents.send('eventsSended', {
+                    /* this.win.webContents.send('eventsSended', {
                         type: "changeTheme",
                         theme: value.value
-                    });
+                    }); */
                     break;
                 case "skipTaskbar":
                     if (value.value) {
@@ -196,7 +222,7 @@ export class MainBrowser extends EventEmitter {
         })
     }
     SendConfigs(): void {
-        this.win.webContents.send('settings', SettingController.getAllConfigs());
+        /* this.win.webContents.send('settings', SettingController.getAllConfigs()); */
     }
     HandleRedirect(e: any, url: string): void {
         if (!Settings.openInternal.value) {
@@ -214,7 +240,11 @@ export class MainBrowser extends EventEmitter {
         let injectScripts: Array<string> = fs.readdirSync(path.resolve(__dirname, "..", "..", "scripts"));
         for (let scriptName of injectScripts) {
             let script = fs.readFileSync(path.resolve(__dirname, "..", "..", "scripts", scriptName), "utf8");
-            await this.win.webContents.executeJavaScript(script+";0");
+            try{
+                await this.win.webContents.executeJavaScript(`${script};`);
+            }catch(ex){
+                console.error(ex);
+            }
         }
     }
 }

@@ -85,12 +85,12 @@ export class Settings extends EventEmitter {
                 text: "Skip Taskbar",
                 tinytext: "Makes the window not show in the taskbar."
             },
-            multiInstance: {
+            /* multiInstance: {
                 section: TabSections.BETA,
                 type: ValueTypes.CHECKBOX,
                 value: false,
                 text: "Multi instance"
-            },
+            }, */
             openInternal: {
                 section: TabSections.GENERAL,
                 type: ValueTypes.CHECKBOX,
@@ -116,7 +116,7 @@ export class Settings extends EventEmitter {
                 text: "Sound notification",
                 tinytext: "Sound of notification"
             },
-            theme: {
+            /* theme: {
                 section: TabSections.GENERAL,
                 type: ValueTypes.SELECT,
                 value: "",
@@ -125,7 +125,7 @@ export class Settings extends EventEmitter {
                     {key:"",text:"Light"},
                     {key:"dark",text:"Dark"},
                 ]
-            },
+            }, */
         }
         this.data.configs = this.mergeData(defaultConfigs, data.configs);
     }
