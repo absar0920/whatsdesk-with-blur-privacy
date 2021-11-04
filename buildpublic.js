@@ -20,7 +20,7 @@ async function BuildPublic() {
     }
 
     del.sync("./page/whatsdesk_*.deb");
-    /* copy(`./dist/whatsdesk_${package.version}_*.deb`, "./page/", (a, files) => {
+    copy(`./dist/whatsdesk_${package.version}_*.deb`, "./page/", (a, files) => {
         update.file = files[0].basename;
         let data = fs.readFileSync(`./page/${update.file}`);
         let checksum = generateChecksum(data);
@@ -38,9 +38,9 @@ async function BuildPublic() {
                 .update(str, 'utf8')
                 .digest(encoding || 'hex');
         }
-    }); */
+    });
 
-	/* copy(`./dist/whatsdesk_${package.version}_*.deb`, "./page/downloads/", (a, files) => {});
+	copy(`./dist/whatsdesk_${package.version}_*.deb`, "./page/downloads/", (a, files) => {});
 	console.log(`cp ./dist/whatsdesk_${package.version}*.rpm ./page/downloads/`);
 	copy(`./dist/whatsdesk-${package.version}*.rpm`, "./page/downloads/", (a, files) => {
 		console.log(a);
@@ -49,7 +49,7 @@ async function BuildPublic() {
 	fs.renameSync(path.resolve(`./dist/whatsdesk\ ${package.version}.AppImage`),`./dist/whatsdesk-${package.version}.AppImage`)
 	copy(path.resolve(`./dist/whatsdesk-${package.version}.AppImage`), "./page/downloads/", (a, files) => {
 		console.log(a);
-	}); */
+	});
 }
 
 function copyFiles(inFile,outPath){
