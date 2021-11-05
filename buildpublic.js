@@ -46,7 +46,7 @@ async function BuildPublic() {
 		console.log(a);
 	});
 	console.log(`cp ./dist/whatsdesk ${package.version}*.AppImage ./page/downloads/`);
-	fs.renameSync(path.resolve(`./dist/whatsdesk\ ${package.version}.AppImage`),`./dist/whatsdesk-${package.version}.AppImage`)
+	/* fs.renameSync(path.resolve(`./dist/whatsdesk\ ${package.version}.AppImage`),`./dist/whatsdesk-${package.version}.AppImage`) */
 	copy(path.resolve(`./dist/whatsdesk-${package.version}.AppImage`), "./page/downloads/", (a, files) => {
 		console.log(a);
 	});
