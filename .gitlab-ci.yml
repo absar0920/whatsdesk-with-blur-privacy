@@ -20,7 +20,9 @@ build:
   - npm install
   - npm run build
   artifacts:
-    untracked: true
+    paths:
+      - dist
+      - page
   only:
   - master
 
