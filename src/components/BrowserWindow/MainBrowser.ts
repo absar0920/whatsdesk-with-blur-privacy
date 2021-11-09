@@ -55,11 +55,19 @@ export class MainBrowser extends EventEmitter {
         return this.win;
     }
     LoadUrl(): boolean {
+        let serviceWorkers = this.win.webContents.session.serviceWorkers.getAllRunning()
+        
+        this.win.webContents.session.webRequest.onBeforeSendHeaders({ urls: ['https://web.whatsapp.com/*'] }, (details, callback) => {
+            details.requestHeaders['User-Agent'] = this.win.webContents.getUserAgent().replace(/(Electron|whatsdesk)\/([0-9\.]+)\ /gi, "").replace(/\-(beta|alfa)/gi, "")
+            callback({ requestHeaders: details.requestHeaders })
+        })
+
         this.win.webContents.setUserAgent(this.win.webContents.getUserAgent().replace(/(Electron|whatsdesk)\/([0-9\.]+)\ /gi, "").replace(/\-(beta|alfa)/gi,""));
         this.win.loadURL("https://web.whatsapp.com/", {
             userAgent: this.win.webContents.getUserAgent().replace(/(Electron|whatsdesk)\/([0-9\.]+)\ /gi, "").replace(/\-(beta|alfa)/gi,"")
         });
         const content = Buffer.from("you've been conned!");
+        
         this.win.webContents.session.webRequest.onHeadersReceived({urls:['https://web.whatsapp.com/*']},(details,cb)=>{
             delete details.responseHeaders['content-security-policy-report-only'];
             delete details.responseHeaders['content-security-policy'];
