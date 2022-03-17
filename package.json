@@ -63,7 +63,7 @@
 		},
 		"linux": {
 			"mimeTypes": [
-				"whatsapp"
+				"x-scheme-handler/whatsapp"
 			],
 			"category": "Network",
 			"icon": "src/icon/linux",
