@@ -153,15 +153,32 @@ export function getSettings(): Settings {
 
 
 export function getWhatsdeskPath(): string {
+    const dir = "whatsdesk"
+
     let home = app.getPath('home');
     if (home.indexOf("/snap/") != -1) {
         home = home.substring(0, home.indexOf("/whatsdesk/") + 11) + "current";
     }
-    home = path.resolve(home, ".whatsdesk");
-    if (!fs.existsSync(home)) {
-        fs.mkdirSync(home);
+
+    let xdg = process.env["XDG_CONFIG_HOME"]
+    const prefer_xdg = !(xdg === undefined)
+    if (!prefer_xdg) {
+        xdg = `${home}/.config`
     }
-    return home;
+
+    let cfg = path.resolve(`${xdg}/${dir}`)
+    if (!fs.existsSync(cfg)) {
+        if (prefer_xdg) {
+            fs.mkdirSync(cfg);
+        } else {
+            cfg = path.resolve(`${home}/.${dir}`);
+            if (!fs.existsSync(cfg)) {
+                fs.mkdirSync(cfg);
+            }
+        }
+    }
+
+    return cfg;
 }
 
 /* function isObject(item: any) {
