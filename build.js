@@ -19,7 +19,7 @@ async function cleanAndBuildTSC() {
     fs.mkdirSync(outDir);
     execSync(`cp -r src/ ${outDir}/src/`);
     await rm(`${outDir}/**/*.ts`,{force:true});
-	execSync("npm run tsc");
+	// execSync("npm run tsc");
 	if(process.env.BUILD == "BETA"){
 		console.log("beta");
 		let tempdata = fs.readFileSync(`${outDir}/src/utils/environment.js`,"utf8");
