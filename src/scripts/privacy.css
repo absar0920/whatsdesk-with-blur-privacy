@@ -1,0 +1,51 @@
+/* Privacy CSS for WhatsApp Web */
+
+/* Blur contact names in the chat list */
+span[title] {
+    filter: blur(4px);
+    transition: filter 0.2s ease;
+}
+
+span[title]:hover {
+    filter: blur(0);
+}
+
+/* Blur message content */
+.message-in, .message-out {
+    filter: blur(4px);
+    transition: filter 0.2s ease;
+}
+
+.message-in:hover, .message-out:hover {
+    filter: blur(0);
+}
+
+/* Blur status messages */
+.status-message {
+    filter: blur(4px);
+    transition: filter 0.2s ease;
+}
+
+.status-message:hover {
+    filter: blur(0);
+}
+
+/* Blur group names */
+span[title*="group"] {
+    filter: blur(4px);
+    transition: filter 0.2s ease;
+}
+
+span[title*="group"]:hover {
+    filter: blur(0);
+}
+
+/* Blur profile names in chat header */
+span[title]._3WByx {
+    filter: blur(4px);
+    transition: filter 0.2s ease;
+}
+
+span[title]._3WByx:hover {
+    filter: blur(0);
+} 

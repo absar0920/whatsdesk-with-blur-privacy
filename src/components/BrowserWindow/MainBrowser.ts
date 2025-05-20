@@ -30,8 +30,9 @@ export class MainBrowser extends EventEmitter {
             webPreferences: {
                 plugins: true,
                 spellcheck: false,
-                sandbox:false
-                /* partition:"persist:main" */
+                sandbox:false,
+                partition:"persist:main", 
+                devTools: true,
             }
         });
 
@@ -43,9 +44,12 @@ export class MainBrowser extends EventEmitter {
             this.win.setSkipTaskbar(true);
         }
 
-        if (process.env.DEBUG) {
-            this.win.webContents.openDevTools();
-        }
+        setTimeout(() => {
+            
+        }, 2000)
+
+
+
         this.EventsInit();
         this.LoadUrl();
         this.CreateMenu();
@@ -118,6 +122,15 @@ export class MainBrowser extends EventEmitter {
                 label: '&Tools',
                 submenu: [
                     {
+                        label: 'Toggle Privacy Mode',
+                        accelerator: "CommandOrControl+p",
+                        click: () => {
+                            const currentValue = Settings.privacyBlur.value;
+                            SettingController.saveConfig('privacyBlur', !currentValue);
+                            this.win.webContents.executeJavaScript(`window.togglePrivacyMode(${!currentValue});`);
+                        }
+                    },
+                    {
                         label: 'Settings',
                         accelerator: "CommandOrControl+s",
                         click() {
@@ -137,6 +150,17 @@ export class MainBrowser extends EventEmitter {
                 label: '&View',
                 submenu: [
                     {
+                        label: 'Toggle Developer Tools',
+                        accelerator: "CommandOrControl+Shift+I",
+                        click: _ => {
+                            if (this.win.webContents.isDevToolsOpened()) {
+                                this.win.webContents.closeDevTools();
+                            } else {
+                                this.win.webContents.openDevTools();
+                            }
+                        }
+                    },
+                    {
                         label: 'show/hide Menu',
                         accelerator: "CommandOrControl+h",
                         click: _ => {
@@ -144,21 +168,20 @@ export class MainBrowser extends EventEmitter {
                             this.win.setAutoHideMenuBar(!this.win.isMenuBarVisible())
                         }
                     },
-					{
+                    {
                         label: 'Zoom +',
                         accelerator: "CommandOrControl+numadd",
                         click: _ => {
                             this.win.webContents.zoomLevel *= 2;
                         }
                     },
-					{
+                    {
                         label: 'Zoom -',
                         accelerator: "CommandOrControl+numsub",
                         click: _ => {
                             this.win.webContents.zoomLevel *= 0.5;
                         }
                     },
-					
                 ]
             }
         ])

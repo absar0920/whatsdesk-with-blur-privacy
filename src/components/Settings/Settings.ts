@@ -71,6 +71,13 @@ export class Settings extends EventEmitter {
     loadDefaultConfigValue(data: any): void {
         let AvailableBrowsers = getAvailableBrowsers().map((e:BrowserElement)=>({key:e.exec,text:e.label}))
         let defaultConfigs: SettingConfigInterface = {
+            privacyBlur: {
+                section: TabSections.GENERAL,
+                type: ValueTypes.CHECKBOX,
+                value: false,
+                text: "Enable Privacy Blur",
+                tinytext: "Blur contact names and messages until hovered"
+            },
             closeExit: {
                 section: TabSections.GENERAL,
                 type: ValueTypes.CHECKBOX,
