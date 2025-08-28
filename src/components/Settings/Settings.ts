@@ -74,7 +74,7 @@ export class Settings extends EventEmitter {
             privacyBlur: {
                 section: TabSections.GENERAL,
                 type: ValueTypes.CHECKBOX,
-                value: false,
+                value: true,
                 text: "Enable Privacy Blur",
                 tinytext: "Blur contact names and messages until hovered"
             },
