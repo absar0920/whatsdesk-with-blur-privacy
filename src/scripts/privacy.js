@@ -801,6 +801,54 @@ div[role='button'].x78zum5 .x78zum5 .x78zum5 .x1c4vz4f .x78zum5:hover {
       transition: 0;
 }
 
+.x1n2onr6.x1c9tyrk.xeusxvb.x1pahc9y.x1ertn4p {
+      filter: blur(8px) grayscale(1) !important;
+      transition: 0;
+}
+.x1n2onr6.x1c9tyrk.xeusxvb.x1pahc9y.x1ertn4p:hover {
+      filter: blur(0) grayscale(0) !important;
+      transition: 0;
+}
+
+/* ============================================================ */
+/* WhatsDesk stable-selector privacy block                      */
+/* Targets data-testid / contenteditable attributes instead of  */
+/* WhatsApp's obfuscated, frequently-regenerated class names.    */
+/* Fixes conversation messages, filter chips and the compose     */
+/* input on WhatsApp Web v2.3xxx (Lexical), which the old rules   */
+/* missed (shifted classes) or no-op'd (undefined var() blur).   */
+/* ============================================================ */
+
+/* Filter chips (All / Unread / Favorites / custom / Groups ...) */
+div[data-testid="filter-button"] {
+      filter: blur(6px);
+      transition: filter 0.2s ease;
+}
+div[data-testid="filter-button"]:hover {
+      filter: blur(0);
+}
+
+/* Conversation message bubbles -- blur whole bubble (text, sender,
+   timestamp and any media), reveal one message at a time on hover */
+div[data-testid="msg-container"] {
+      filter: blur(8px) grayscale(1);
+      transition: filter 0.2s ease;
+}
+div[data-testid="msg-container"]:hover {
+      filter: blur(0) grayscale(0);
+}
+
+/* Compose input (Lexical) -- reveal while focused (typing) or hovered */
+div[data-testid="conversation-compose-box-input"] {
+      filter: blur(6px);
+      transition: filter 0.2s ease;
+}
+div[data-testid="conversation-compose-box-input"]:hover,
+div[data-testid="conversation-compose-box-input"]:focus,
+div[data-testid="conversation-compose-box-input"]:focus-within {
+      filter: blur(0);
+}
+
 
 `;
     }
