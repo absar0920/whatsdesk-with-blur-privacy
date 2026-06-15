@@ -838,14 +838,26 @@ div[data-testid="msg-container"]:hover {
       filter: blur(0) grayscale(0);
 }
 
-/* Compose input (Lexical) -- reveal while focused (typing) or hovered */
+/* Compose text region (Lexical) -- blurred even while typing; reveal on hover only.
+   (Focus-reveal intentionally omitted so the draft stays blurred as you type.)
+   The visible placeholder + typed text live in DIFFERENT children of the wrapper,
+   so we blur the wrapper to cover both. The action buttons (+, emoji, mic) are
+   siblings outside this wrapper and stay crisp. */
+div.lexical-rich-text-input {
+      filter: blur(6px);
+      transition: filter 0.2s ease;
+}
+div.lexical-rich-text-input:hover {
+      filter: blur(0);
+}
+
+/* Fallback: blur the typed text directly via its data-testid, in case the
+   wrapper class above is ever renamed by a WhatsApp update. */
 div[data-testid="conversation-compose-box-input"] {
       filter: blur(6px);
       transition: filter 0.2s ease;
 }
-div[data-testid="conversation-compose-box-input"]:hover,
-div[data-testid="conversation-compose-box-input"]:focus,
-div[data-testid="conversation-compose-box-input"]:focus-within {
+div[data-testid="conversation-compose-box-input"]:hover {
       filter: blur(0);
 }
 
