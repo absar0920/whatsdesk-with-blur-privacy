@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=whatsdesk
 Exec=whatsdesk %U
-Path=/home/mqrtxget/projects/personal/whatsdesk-with-blur-privacy/page
+Path=<path_to_whatsdesk_page>/page
 Terminal=false
 Type=Application
 Icon=whatsdesk
