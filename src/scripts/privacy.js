@@ -849,6 +849,34 @@ div[data-testid="conversation-compose-box-input"]:focus-within {
       filter: blur(0);
 }
 
+/* Message reactions (sibling of the bubble, so not covered by msg-container) */
+button[data-testid="reaction-bubble"] {
+      filter: blur(6px);
+      transition: filter 0.2s ease;
+}
+button[data-testid="reaction-bubble"]:hover {
+      filter: blur(0);
+}
+
+/* Chat header -- group/contact name + subtitle (member list / status).
+   Wraps only the text column; the avatar and action icons stay crisp. */
+div[data-testid="conversation-info-header"] {
+      filter: blur(6px);
+      transition: filter 0.2s ease;
+}
+div[data-testid="conversation-info-header"]:hover {
+      filter: blur(0);
+}
+
+/* Pinned-message bar (grayscale too, since a pin can preview media) */
+button[data-testid="conversation-subheader"] {
+      filter: blur(6px) grayscale(1);
+      transition: filter 0.2s ease;
+}
+button[data-testid="conversation-subheader"]:hover {
+      filter: blur(0) grayscale(0);
+}
+
 
 `;
     }
