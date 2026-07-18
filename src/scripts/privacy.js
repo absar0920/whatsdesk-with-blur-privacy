@@ -889,6 +889,58 @@ button[data-testid="conversation-subheader"]:hover {
       filter: blur(0) grayscale(0);
 }
 
+/* ============================================================ */
+/* Profile / avatar blur — container-level, DOM-grounded        */
+/* Blurs photo, silhouette AND initials avatars alike by         */
+/* blurring the avatar CONTAINER, not the <svg>. Default-contact */
+/* avatars render their <svg> at a different intrinsic size      */
+/* (e.g. height="212"), so size-qualified svg[height=...] rules  */
+/* would silently miss every non-photo avatar. Each reveals on   */
+/* hover, consistent with the rest of the sheet.                 */
+/* ============================================================ */
+
+/* Spot 1 — chat-list row avatar (main list AND Archived share
+   the same cell-frame-container). First child is the avatar
+   column; the second child holds the name + last-message preview
+   (incl. emoji <img>), so this does not blur preview emoji. */
+div[data-testid="cell-frame-container"] > div:first-child {
+      filter: blur(8px) grayscale(1);
+      transition: filter 0.2s ease;
+}
+div[data-testid="cell-frame-container"] > div:first-child:hover {
+      filter: blur(0) grayscale(0);
+}
+
+/* Spot 2 — open chat's header avatar. The "Profile details" button
+   contains only the avatar, so blurring the button is safe.
+   NOTE: aria-label is locale-dependent (breaks if WhatsApp's UI
+   language changes); the #main header rule below is a photo-only
+   locale-proof backup. */
+div[aria-label="Profile details"] {
+      filter: blur(8px) grayscale(1);
+      transition: filter 0.2s ease;
+}
+div[aria-label="Profile details"]:hover {
+      filter: blur(0) grayscale(0);
+}
+#main header svg[height="40"] {
+      filter: blur(8px) grayscale(1);
+      transition: filter 0.2s ease;
+}
+#main header svg[height="40"]:hover {
+      filter: blur(0) grayscale(0);
+}
+
+/* Spot 3 — your own profile avatar in the left nav rail
+   (covers both the default silhouette and a set profile photo). */
+div[data-testid="navbar-item-me-tab-photo"] {
+      filter: blur(8px) grayscale(1);
+      transition: filter 0.2s ease;
+}
+div[data-testid="navbar-item-me-tab-photo"]:hover {
+      filter: blur(0) grayscale(0);
+}
+
 
 `;
     }
