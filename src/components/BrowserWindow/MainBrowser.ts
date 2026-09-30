@@ -268,7 +268,7 @@ export class MainBrowser extends EventEmitter {
         }
     }
     async ScriptLoad(): Promise<void> {
-        let injectScripts: Array<string> = fs.readdirSync(path.resolve(__dirname, "..", "..", "scripts"));
+        let injectScripts: Array<string> = fs.readdirSync(path.resolve(__dirname, "..", "..", "scripts")).filter(name => name.endsWith(".js"));
         for (let scriptName of injectScripts) {
             let script = fs.readFileSync(path.resolve(__dirname, "..", "..", "scripts", scriptName), "utf8");
             try{

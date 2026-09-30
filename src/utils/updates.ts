@@ -9,8 +9,17 @@ export function checkUpdates(): Promise<boolean> {
     return new Promise(done => {
         http.get('https://zerkc.gitlab.io/whatsdesk/update.json', (res) => {
             res.setEncoding('utf8');
-            res.on('data', (d) => {
-				d = JSON.parse(d);
+            let body = '';
+            res.on('data', (chunk) => {
+                body += chunk;
+            });
+            res.on('end', () => {
+				let d;
+				try {
+					d = JSON.parse(body);
+				} catch (e) {
+					return done(false);
+				}
 				if(envConfig.runEnv == "PROD"){
 					if (semver.lt(packa.version, d.version)) {
 						done(true);
